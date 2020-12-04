@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net5.0;netstandard2.0;net48</TargetFrameworks>
+		<AssemblyName>InsightArchitectures.Utilities.Clock.Testing</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>InsightArchitectures.Utilities.Clock.Testing</PackageId>
+		<PackageTags>clock;utilities;dotnet;unit-test</PackageTags>
+		<Description>Helper classes to simulate the flowing of time when using IClock from EMG.Utilities.Clock.Testing</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+    <ProjectReference Include="..\Clock\Clock.csproj" />
+  </ItemGroup>
+
+</Project>
