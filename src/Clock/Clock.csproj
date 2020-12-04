@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;netstandard2.0;net48</TargetFrameworks>
+    <AssemblyName>InsightArchitectures.Utilities.Clock</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>InsightArchitectures.Utilities.Clock</PackageId>
+    <PackageTags>clock;utilities;dotnet</PackageTags>
+    <Description>Helper class to avoid accessing statically the current date and time. Inspired by EMG.Utilities.Clock.</Description>
+  </PropertyGroup>
+
+</Project>
