@@ -25,7 +25,8 @@ namespace InsightArchitectures.Utilities
         /// <summary>
         /// Creates an instance of <see cref="TestClock" /> set to the current date and time.
         /// </summary>
-        public TestClock() : this (DateTimeOffset.UtcNow)
+        public TestClock()
+            : this(DateTimeOffset.UtcNow)
         {
         }
 
