@@ -34,10 +34,10 @@ deploy:
   - provider: Environment
     name: NuGet
     on:
-      branch: master
+      branch: main
       appveyor_repo_tag: true
   - provider: Environment
     name: GitHub
     on:
-      branch: master
+      branch: main
       appveyor_repo_tag: true
