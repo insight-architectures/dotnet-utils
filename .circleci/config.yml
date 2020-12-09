@@ -1,11 +1,20 @@
 version: 2.1
 
+orbs:
+  win: circleci/windows@2.2.0
+
 jobs:
   build:
-    docker:
-      - image: mcr.microsoft.com/dotnet/sdk:5.0
+    executor:
+      name: win/default
+      shell: powershell.exe
     steps:
       - checkout
+      - run:
+          name: Install .NET 5.0
+          command: |
+            Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1' -OutFile 'dotnet-install.ps1'
+            ./dotnet-install.ps1 -Runtime dotnet
       - run:
           name: Restore "Cake.Tool" .NET Core local tool
           command: |
