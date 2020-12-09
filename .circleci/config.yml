@@ -11,11 +11,6 @@ jobs:
           command: |
             dotnet tool restore
       - run:
-          name: Install libcurl3 for GitVersion
-          command: |
-            apt-get update
-            apt-get install -qq -y libcurl4
-      - run:
           name: Build
           command: |
-            dotnet cake
+            dotnet cake --verbosity=Verbose
