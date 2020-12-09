@@ -13,8 +13,7 @@ jobs:
       - run:
           name: Install .NET 5.0
           command: |
-            Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1' -OutFile 'dotnet-install.ps1'
-            ./dotnet-install.ps1 -Runtime dotnet
+            &powershell -NoProfile -ExecutionPolicy unrestricted -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; &([scriptblock]::Create((Invoke-WebRequest -UseBasicParsing 'https://dot.net/v1/dotnet-install.ps1')))"
       - run:
           name: Restore "Cake.Tool" .NET Core local tool
           command: |
