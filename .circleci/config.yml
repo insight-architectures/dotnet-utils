@@ -1,0 +1,21 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:5.0
+    steps:
+      - checkout
+      - run:
+          name: Restore "Cake.Tool" .NET Core local tool
+          command: |
+            dotnet tool restore
+      - run:
+          name: Install libcurl3 for GitVersion
+          command: |
+            apt-get update
+            apt-get install -qq -y libcurl3
+      - run:
+          name: Build
+          command: |
+            dotnet cake
