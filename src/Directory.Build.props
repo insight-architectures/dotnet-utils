@@ -2,6 +2,8 @@
   <PropertyGroup>
     <RootNamespace>InsightArchitectures.Utilities</RootNamespace>
     <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <AssemblyName>$(RootNamespace).$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -14,6 +16,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/insight-architectures/dotnet-utils</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageId>$(AssemblyName)</PackageId>
   </PropertyGroup>
 
   <PropertyGroup>
