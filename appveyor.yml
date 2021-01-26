@@ -39,7 +39,7 @@ deploy:
         - main
       appveyor_repo_tag: true
   - provider: Environment
-    name: GitHub Packages - Kralizek
+    name: GitHub
     on:
       branch:
         - master
