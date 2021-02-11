@@ -45,3 +45,12 @@ deploy:
         - master
         - main
       appveyor_repo_tag: true
+  - provider: GitHub
+    on:
+      branch:
+        - master
+        - main
+      appveyor_repo_tag: true
+    auth_token:
+      secure: Qv4tMB9BvNni2+v69vK38jQq2ga1+GiI/YqCWkiA1fZN72v2NtaZo6UpwmXQNkop
+    artifact: /.*.nupkg/
