@@ -11,7 +11,7 @@ namespace Tests
         [Test, AutoData]
         public void UtcNow_returns_current_time()
         {
-            Assert.That(SystemClock.Instance.UtcNow, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromTicks(100)));
+            Assert.That(SystemClock.Instance.UtcNow, Is.EqualTo(DateTimeOffset.UtcNow).Within(TimeSpan.FromSeconds(1)));
         }
     }
 }
