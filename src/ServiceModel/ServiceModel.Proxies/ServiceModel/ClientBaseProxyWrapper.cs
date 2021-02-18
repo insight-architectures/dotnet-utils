@@ -37,7 +37,7 @@ namespace InsightArchitectures.Utilities.ServiceModel
                 switch (_client.State)
                 {
                     case CommunicationState.Created:
-                        OpenAsync().Wait();
+                        _client.OpenAsync().Wait();
                         break;
 
                     case CommunicationState.Faulted:
@@ -61,7 +61,7 @@ namespace InsightArchitectures.Utilities.ServiceModel
                 {
                     case CommunicationState.Opened:
                         _logger.LogDebug("Closing connection");
-                        await CloseAsync().ConfigureAwait(false);
+                        await _client.CloseAsync().ConfigureAwait(false);
                         break;
 
                     case CommunicationState.Faulted:
@@ -97,9 +97,5 @@ namespace InsightArchitectures.Utilities.ServiceModel
                 throw;
             }
         }
-
-        private Task OpenAsync() => Task.Factory.FromAsync(((ICommunicationObject)_client).BeginOpen(null, null), ((ICommunicationObject)_client).EndOpen);
-
-        private Task CloseAsync() => Task.Factory.FromAsync(((ICommunicationObject)_client).BeginClose(null, null), ((ICommunicationObject)_client).EndClose);
     }
 }

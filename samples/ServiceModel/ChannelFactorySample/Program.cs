@@ -1,13 +1,12 @@
 ﻿using System;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
 using System.Threading.Tasks;
-using InsightArchitectures.Utilities.ServiceModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Contracts;
+using InsightArchitectures.Utilities.ServiceModel;
 
-namespace ClientBaseSample
+namespace ChannelFactorySample
 {
     class Program
     {
@@ -17,13 +16,13 @@ namespace ClientBaseSample
 
             services.AddLogging(l => l.AddConsole().SetMinimumLevel(LogLevel.Debug));
 
-            services.AddTransient(sp =>
+            services.AddSingleton(sp =>
             {
                 var binding = new BasicHttpBinding();
 
                 var endpointAddress = new EndpointAddress("http://localhost:8080");
 
-                return ActivatorUtilities.CreateInstance<EchoClient>(sp, binding, endpointAddress);
+                return ActivatorUtilities.CreateInstance<ChannelFactory<IEchoService>>(sp, binding, endpointAddress);
             });
 
             services.AddTransient<TestEchoProxyWrapper>();
@@ -44,21 +43,11 @@ namespace ClientBaseSample
             {
                 logger.LogError(ex, "An error occurred while performing a remote call");
             }
-
         }
     }
 
-    public class EchoClient : ClientBase<IEchoService>, IEchoService
+    public class TestEchoProxyWrapper : ChannelFactoryProxyWrapper<IEchoService>
     {
-        public EchoClient(Binding binding, EndpointAddress address) : base(binding, address)
-        {
-        }
-
-        public string Echo(string message) => Channel.Echo(message);
-    }
-
-    public class TestEchoProxyWrapper : ClientBaseProxyWrapper<IEchoService, EchoClient>
-    {
-        public TestEchoProxyWrapper(EchoClient client, ILogger<TestEchoProxyWrapper> logger) : base(client, logger) {}
+        public TestEchoProxyWrapper(ChannelFactory<IEchoService> channelFactory, ILogger<TestEchoProxyWrapper> logger) : base(channelFactory, logger) {}
     }
 }
