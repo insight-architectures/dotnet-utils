@@ -2,7 +2,6 @@
 
 namespace InsightArchitectures.Utilities.ServiceModel
 {
-
     /// <summary>
     /// A disposable wrapper around a service proxy.
     /// </summary>

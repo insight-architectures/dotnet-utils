@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using InsightArchitectures.Utilities.ServiceModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Contracts;
 
 namespace ClientBaseSample
 {
@@ -45,13 +46,6 @@ namespace ClientBaseSample
             }
 
         }
-    }
-
-    [ServiceContract]
-    public interface IEchoService
-    {
-        [OperationContract]
-        string Echo(string message);
     }
 
     public class EchoClient : ClientBase<IEchoService>, IEchoService
