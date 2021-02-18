@@ -9,7 +9,7 @@ namespace InsightArchitectures.Utilities.ServiceModel
     /// Implementation of <see cref="IProxyWrapper{TContract}"/> based on <see cref="ClientBase{TChannel}"/>.
     /// </summary>
     /// <inheritdoc />
-    public abstract class ClientBaseProxyWrapper<TContract, TClient> : IProxyWrapper<TContract>
+    public class ClientBaseProxyWrapper<TContract, TClient> : IProxyWrapper<TContract>
         where TContract : class
         where TClient : ClientBase<TContract>, TContract
     {
@@ -19,12 +19,22 @@ namespace InsightArchitectures.Utilities.ServiceModel
         /// <summary>
         /// Creates an instance of the wrapper around an instance of <see cref="ClientBase{TContract}"/>.
         /// </summary>
-        /// <param name="client"></param>
-        /// <param name="logger"></param>
+        /// <param name="client">A client inheriting from <see cref="ClientBase{TChannel}"/> and implementing <typeparamref name="TContract"/>.</param>
+        /// <param name="logger">An instance of <see cref="ILogger" />.</param>
         protected ClientBaseProxyWrapper(TClient client, ILogger logger)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        /// <summary>
+        /// Creates an instance of the wrapper around an instance of <see cref="ClientBase{TContract}"/>.
+        /// </summary>
+        /// <param name="client">A client inheriting from <see cref="ClientBase{TChannel}"/> and implementing <typeparamref name="TContract"/>.</param>
+        /// <param name="logger">An instance of <see cref="ILogger" />.</param>
+        public ClientBaseProxyWrapper(TClient client, ILogger<ClientBaseProxyWrapper<TContract, TClient>> logger)
+            : this(client, logger as ILogger)
+        {
         }
 
         /// <summary>
@@ -34,16 +44,7 @@ namespace InsightArchitectures.Utilities.ServiceModel
         {
             get
             {
-                switch (_client.State)
-                {
-                    case CommunicationState.Created:
-                        _client.OpenAsync().Wait();
-                        break;
-
-                    case CommunicationState.Faulted:
-                    case CommunicationState.Closed:
-                        throw new InvalidOperationException($"Unable to use the current channel because its state is: {_client.State:G}");
-                }
+                _client.EnsureChannelIsOpened().Wait();
 
                 return _client;
             }
@@ -53,49 +54,6 @@ namespace InsightArchitectures.Utilities.ServiceModel
         /// Closes the underlying proxy.
         /// </summary>
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
-        {
-            try
-            {
-                switch (_client.State)
-                {
-                    case CommunicationState.Opened:
-                        _logger.LogDebug("Closing connection");
-                        await _client.CloseAsync().ConfigureAwait(false);
-                        break;
-
-                    case CommunicationState.Faulted:
-                        _logger.LogDebug("Aborting connection");
-                        _client.Abort();
-                        break;
-
-                    case CommunicationState.Closed:
-                    case CommunicationState.Closing:
-                    case CommunicationState.Created:
-                    case CommunicationState.Opening:
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            catch (CommunicationException ex)
-            {
-                _logger.LogError(ex, "An error occurred while closing the connection");
-                _client.Abort();
-            }
-            catch (TimeoutException ex)
-            {
-                _logger.LogError(ex, "An error occurred while closing the connection");
-                _client.Abort();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while closing the connection");
-                _client.Abort();
-
-                throw;
-            }
-        }
+        public ValueTask DisposeAsync() => _client.DisposeChannelAsync(_logger);
     }
 }
