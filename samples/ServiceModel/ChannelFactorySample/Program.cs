@@ -25,6 +25,8 @@ namespace ChannelFactorySample
                 return ActivatorUtilities.CreateInstance<ChannelFactory<IEchoService>>(sp, binding, endpointAddress);
             });
 
+            services.AddSingleton<IChannelFactory<IEchoService>, ChannelFactoryWrapper<IEchoService>>();
+
             services.AddTransient<TestEchoProxyWrapper>();
 
             await using var serviceProvider = services.BuildServiceProvider();
@@ -48,6 +50,6 @@ namespace ChannelFactorySample
 
     public class TestEchoProxyWrapper : ChannelFactoryProxyWrapper<IEchoService>
     {
-        public TestEchoProxyWrapper(ChannelFactory<IEchoService> channelFactory, ILogger<TestEchoProxyWrapper> logger) : base(channelFactory, logger) {}
+        public TestEchoProxyWrapper(IChannelFactory<IEchoService> channelFactory, ILogger<TestEchoProxyWrapper> logger) : base(channelFactory, logger) {}
     }
 }
