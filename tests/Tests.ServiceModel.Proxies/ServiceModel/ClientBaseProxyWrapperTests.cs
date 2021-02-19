@@ -1,9 +1,14 @@
 ﻿using System;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.ServiceModel.Dispatcher;
 using System.Threading.Tasks;
 using AutoFixture.Idioms;
 using AutoFixture.NUnit3;
+using Castle.Core.Logging;
 using InsightArchitectures.Utilities.ServiceModel;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -11,13 +16,13 @@ namespace Tests.ServiceModel
 {
     [TestFixture]
     [TestOf(typeof(ClientBaseProxyWrapper<,>))]
-    public class WcfProxyWrapperTests
+    public class ClientBaseProxyWrapperTests
     {
         [Test, CustomAutoData]
-        public void Constructor_is_guarded(GuardClauseAssertion assertion) => assertion.Verify(typeof (TestWcfProxyWrapper).GetConstructors());
+        public void Constructor_is_guarded(GuardClauseAssertion assertion) => assertion.Verify(typeof (TestClientBaseProxyWrapper).GetConstructors());
 
         [Test, CustomAutoData]
-        public void TestFixture_can_reproduce_behavior([Frozen] Func<string, string> func, TestWcfProxyWrapper sut, string message)
+        public void TestFixture_can_reproduce_behavior([Frozen] Func<string, string> func, TestClientBaseProxyWrapper sut, string message)
         {
             Mock.Get(func).Setup(p => p(It.IsAny<string>())).Returns((string arg) => arg);
 
@@ -27,7 +32,7 @@ namespace Tests.ServiceModel
         }
 
         [Test, CustomAutoData]
-        public void TestFixture_can_inject_exception([Frozen] Func<string, string> func, TestWcfProxyWrapper sut, string message, Exception exception)
+        public void TestFixture_can_inject_exception([Frozen] Func<string, string> func, TestClientBaseProxyWrapper sut, string message, Exception exception)
         {
             Mock.Get(func).Setup(p => p(It.IsAny<string>())).Throws(exception);
 
@@ -35,10 +40,10 @@ namespace Tests.ServiceModel
         }
 
         [Test, CustomAutoData]
-        public void Client_exposes_inner_client([Frozen] TestClient client, TestWcfProxyWrapper sut) => Assert.That(sut.Proxy, Is.SameAs(client));
+        public void Client_exposes_inner_client([Frozen] TestClient client, TestClientBaseProxyWrapper sut) => Assert.That(sut.Proxy, Is.SameAs(client));
 
         [Test, CustomAutoData]
-        public async Task Connection_is_closed_when_disposed([Frozen] TestClient client, TestWcfProxyWrapper sut, string message)
+        public async Task Connection_is_closed_when_disposed([Frozen] TestClient client, TestClientBaseProxyWrapper sut, string message)
         {
             Assume.That(client.State, Is.EqualTo(CommunicationState.Created));
 
@@ -53,7 +58,7 @@ namespace Tests.ServiceModel
         }
 
         [Test, CustomAutoData]
-        public async Task Connection_is_closed_when_disposed_after_failure([Frozen] Func<string, string> func, [Frozen] TestClient client, TestWcfProxyWrapper sut, string message, Exception exception)
+        public async Task Connection_is_closed_when_disposed_after_failure([Frozen] Func<string, string> func, [Frozen] TestClient client, TestClientBaseProxyWrapper sut, string message, Exception exception)
         {
             Mock.Get(func).Setup(p => p(It.IsAny<string>())).Throws(exception);
 

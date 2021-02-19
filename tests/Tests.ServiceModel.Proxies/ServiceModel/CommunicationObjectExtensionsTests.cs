@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using AutoFixture.Idioms;
 using InsightArchitectures.Utilities.ServiceModel;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -125,6 +124,5 @@ namespace Tests.ServiceModel
 
             Mock.Get(sut).Verify(p => p.BeginClose(It.IsAny<AsyncCallback>(), It.IsAny<object>()), Times.Never());
         }
-
     }
 }

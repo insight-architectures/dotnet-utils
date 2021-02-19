@@ -25,9 +25,16 @@ namespace Tests
         public string Echo(string message) => _executor(message);
     }
 
-    public class TestWcfProxyWrapper : ClientBaseProxyWrapper<ITestService, TestClient>
+    public class TestClientBaseProxyWrapper : ClientBaseProxyWrapper<ITestService, TestClient>
     {
-        public TestWcfProxyWrapper(TestClient client, ILogger logger) : base(client, logger)
+        public TestClientBaseProxyWrapper(TestClient client, ILogger<TestClientBaseProxyWrapper> logger) : base(client, logger)
+        {
+        }
+    }
+
+    public class TestChannelFactoryProxyWrapper : ChannelFactoryProxyWrapper<ITestService>
+    {
+        public TestChannelFactoryProxyWrapper(ChannelFactory<ITestService> channelFactory, ILogger<TestChannelFactoryProxyWrapper> logger) : base(channelFactory, logger)
         {
         }
     }

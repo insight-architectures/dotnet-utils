@@ -17,22 +17,20 @@ namespace InsightArchitectures.Utilities.ServiceModel
         /// <summary>
         /// Creates an instance of the wrapper around a proxy created by <see cref="ChannelFactory{TContract}"/>.
         /// </summary>
-        /// <param name="channelFactory">An instance of <seealso cref="ChannelFactory{TChannel}"/> that can create a proxy for <typeparamref name="TContract"/>.</param>
+        /// <param name="channelFactory">A channel factory that can create a proxy for <typeparamref name="TContract"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger" />.</param>
-        protected ChannelFactoryProxyWrapper(ChannelFactory<TContract> channelFactory, ILogger logger)
+        protected ChannelFactoryProxyWrapper(IChannelFactory<TContract> channelFactory, ILogger logger)
         {
-            _ = channelFactory ?? throw new ArgumentNullException(nameof(channelFactory));
-
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _proxy ??= channelFactory.CreateChannel();
+            _proxy = channelFactory?.CreateChannel() ?? throw new ArgumentNullException(nameof(channelFactory));
         }
 
         /// <summary>
         /// Creates an instance of the wrapper around a proxy created by <see cref="ChannelFactory{TContract}"/>.
         /// </summary>
-        /// <param name="channelFactory">An instance of <seealso cref="ChannelFactory{TChannel}"/> that can create a proxy for <typeparamref name="TContract"/>.</param>
+        /// <param name="channelFactory">A channel factory that can create a proxy for <typeparamref name="TContract"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger" />.</param>
-        public ChannelFactoryProxyWrapper(ChannelFactory<TContract> channelFactory, ILogger<ChannelFactoryProxyWrapper<TContract>> logger)
+        public ChannelFactoryProxyWrapper(IChannelFactory<TContract> channelFactory, ILogger<ChannelFactoryProxyWrapper<TContract>> logger)
             : this(channelFactory, logger as ILogger)
         {
         }

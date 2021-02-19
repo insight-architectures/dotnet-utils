@@ -5,7 +5,6 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.NUnit3;
 using Moq;
-using Tests.ServiceModel;
 
 namespace Tests
 {
@@ -40,6 +39,8 @@ namespace Tests
             fixture.Register((Uri uri) => new EndpointAddress(uri.ToString()));
 
             fixture.Register<Binding>(() => new BasicHttpBinding());
+
+            fixture.Register((EndpointAddress address, Binding binding) => new Mock<ChannelFactory<ITestService>>(binding, address));
 
             return fixture;
         }
