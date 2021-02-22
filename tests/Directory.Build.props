@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <RootNamespace>Tests</RootNamespace>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
