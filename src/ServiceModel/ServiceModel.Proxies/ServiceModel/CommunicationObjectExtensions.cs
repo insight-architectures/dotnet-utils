@@ -39,7 +39,7 @@ namespace InsightArchitectures.Utilities.ServiceModel
         /// <param name="communicationObject">The channel to dispose.</param>
         /// <param name="logger">A logger to be used for logging purposes.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="communicationObject"/> is null.</exception>
-        public static async ValueTask DisposeChannelAsync(this ICommunicationObject communicationObject, ILogger? logger = null)
+        public static async Task DisposeChannelAsync(this ICommunicationObject communicationObject, ILogger? logger = null)
         {
             _ = communicationObject ?? throw new ArgumentNullException(nameof(communicationObject));
 

@@ -15,7 +15,7 @@ using NUnit.Framework;
 namespace Tests.ServiceModel
 {
     [TestFixture]
-    [TestOf(typeof(ClientBaseProxyWrapper<,>))]
+    [TestOf(typeof (ClientBaseProxyWrapper<,>))]
     public class ClientBaseProxyWrapperTests
     {
         [Test, CustomAutoData]
@@ -42,6 +42,7 @@ namespace Tests.ServiceModel
         [Test, CustomAutoData]
         public void Client_exposes_inner_client([Frozen] TestClient client, TestClientBaseProxyWrapper sut) => Assert.That(sut.Proxy, Is.SameAs(client));
 
+#if NETCOREAPP3_1 || NET5_0
         [Test, CustomAutoData]
         public async Task Connection_is_closed_when_disposed([Frozen] TestClient client, TestClientBaseProxyWrapper sut, string message)
         {
@@ -79,5 +80,44 @@ namespace Tests.ServiceModel
 
             Mock.Get(func).Verify(p => p(message), Times.Once);
         }
+#elif NETFRAMEWORK || NETCOREAPP2_1
+        [Test, CustomAutoData]
+        public void Connection_is_closed_when_disposed([Frozen] TestClient client, TestClientBaseProxyWrapper sut, string message)
+        {
+            Assume.That(client.State, Is.EqualTo(CommunicationState.Created));
+
+            using (sut)
+            {
+                _ = sut.Proxy.Echo(message);
+
+                Assume.That(client.State, Is.EqualTo(CommunicationState.Opened));
+            }
+
+            Assert.That(client.State, Is.EqualTo(CommunicationState.Closed));
+        }
+
+        [Test, CustomAutoData]
+        public void Connection_is_closed_when_disposed_after_failure([Frozen] Func<string, string> func, [Frozen] TestClient client, TestClientBaseProxyWrapper sut, string message, Exception exception)
+        {
+            Mock.Get(func).Setup(p => p(It.IsAny<string>())).Throws(exception);
+
+            using (sut)
+            {
+                try
+                {
+                    _ = sut.Proxy.Echo(message);
+
+                    Assume.That(client.State, Is.EqualTo(CommunicationState.Opened));
+
+                    _ = sut.Proxy.Echo(message);
+                }
+                catch (Exception) {}
+            }
+
+            Assert.That(client.State, Is.EqualTo(CommunicationState.Closed));
+
+            Mock.Get(func).Verify(p => p(message), Times.Once);
+        }
+#endif
     }
 }

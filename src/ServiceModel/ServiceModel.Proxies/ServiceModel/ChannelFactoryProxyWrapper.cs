@@ -50,10 +50,18 @@ namespace InsightArchitectures.Utilities.ServiceModel
             }
         }
 
+#if NETCOREAPP || NETSTANDARD2_1
         /// <summary>
         /// Closes the underlying proxy.
         /// </summary>
         /// <inheritdoc />
-        public ValueTask DisposeAsync() => Channel.DisposeChannelAsync(_logger);
+        public async ValueTask DisposeAsync() => await Channel.DisposeChannelAsync(_logger).ConfigureAwait(false);
+#elif NETFRAMEWORK || NETSTANDARD2_0
+        /// <summary>
+        /// Closes the underlying proxy.
+        /// </summary>
+        /// <inheritdoc />
+        public void Dispose() => Channel.DisposeChannelAsync(_logger).Wait();
+#endif
     }
 }
