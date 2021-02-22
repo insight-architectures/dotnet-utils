@@ -21,9 +21,9 @@ namespace ClientBaseSample
             {
                 var binding = new BasicHttpBinding();
 
-                var endpointAddress = new EndpointAddress("http://localhost:8080");
+                var endpointAddress = new EndpointAddress("http://localhost:8080/basic");
 
-                return ActivatorUtilities.CreateInstance<EchoClient>(sp, binding, endpointAddress);
+                return ActivatorUtilities.CreateInstance<TestClient>(sp, binding, endpointAddress);
             });
 
             services.AddTransient<TestEchoProxyWrapper>();
@@ -36,29 +36,33 @@ namespace ClientBaseSample
 
             try
             {
-                var result = client.Proxy.Echo("Hello world");
+                for (var i = 0; i < 10_000; i++)
+                {
+                    var result = client.Proxy.SuccessOperation($"Hello world {i}");
 
-                logger.LogInformation($"Result: {result}");
+                    logger.LogInformation($"Result: {result}");
+                }
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while performing a remote call");
             }
-
         }
     }
 
-    public class EchoClient : ClientBase<IEchoService>, IEchoService
+    public class TestClient : ClientBase<ITestService>, ITestService
     {
-        public EchoClient(Binding binding, EndpointAddress address) : base(binding, address)
+        public TestClient(Binding binding, EndpointAddress address) : base(binding, address)
         {
         }
 
-        public string Echo(string message) => Channel.Echo(message);
+        public string SuccessOperation(string message) => Channel.SuccessOperation(message);
+
+        public string FaultyOperation(string message) => Channel.FaultyOperation(message);
     }
 
-    public class TestEchoProxyWrapper : ClientBaseProxyWrapper<IEchoService, EchoClient>
+    public class TestEchoProxyWrapper : ClientBaseProxyWrapper<ITestService, TestClient>
     {
-        public TestEchoProxyWrapper(EchoClient client, ILogger<TestEchoProxyWrapper> logger) : base(client, logger) {}
+        public TestEchoProxyWrapper(TestClient client, ILogger<TestEchoProxyWrapper> logger) : base(client, logger) {}
     }
 }

@@ -20,12 +20,10 @@ namespace ChannelFactorySample
             {
                 var binding = new BasicHttpBinding();
 
-                var endpointAddress = new EndpointAddress("http://localhost:8080");
+                var endpointAddress = new EndpointAddress("http://localhost:8080/basic");
 
-                return ActivatorUtilities.CreateInstance<ChannelFactory<IEchoService>>(sp, binding, endpointAddress);
+                return ActivatorUtilities.CreateInstance<ChannelFactory<ITestService>>(sp, binding, endpointAddress);
             });
-
-            services.AddSingleton<IChannelFactory<IEchoService>, ChannelFactoryWrapper<IEchoService>>();
 
             services.AddTransient<TestEchoProxyWrapper>();
 
@@ -37,9 +35,12 @@ namespace ChannelFactorySample
 
             try
             {
-                var result = client.Proxy.Echo("Hello world");
+                for (var i = 0; i < 10_000; i++)
+                {
+                    var result = client.Proxy.SuccessOperation($"Hello world {i}");
 
-                logger.LogInformation($"Result: {result}");
+                    logger.LogInformation($"Result: {result}");
+                }
             }
             catch (Exception ex)
             {
@@ -48,8 +49,8 @@ namespace ChannelFactorySample
         }
     }
 
-    public class TestEchoProxyWrapper : ChannelFactoryProxyWrapper<IEchoService>
+    public class TestEchoProxyWrapper : ChannelFactoryProxyWrapper<ITestService>
     {
-        public TestEchoProxyWrapper(IChannelFactory<IEchoService> channelFactory, ILogger<TestEchoProxyWrapper> logger) : base(channelFactory, logger) {}
+        public TestEchoProxyWrapper(ChannelFactory<ITestService> channelFactory, ILogger<TestEchoProxyWrapper> logger) : base(channelFactory, logger) {}
     }
 }

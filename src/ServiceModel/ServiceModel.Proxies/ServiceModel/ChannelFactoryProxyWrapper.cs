@@ -19,7 +19,7 @@ namespace InsightArchitectures.Utilities.ServiceModel
         /// </summary>
         /// <param name="channelFactory">A channel factory that can create a proxy for <typeparamref name="TContract"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger" />.</param>
-        protected ChannelFactoryProxyWrapper(IChannelFactory<TContract> channelFactory, ILogger logger)
+        protected ChannelFactoryProxyWrapper(ChannelFactory<TContract> channelFactory, ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _proxy = channelFactory?.CreateChannel() ?? throw new ArgumentNullException(nameof(channelFactory));
@@ -30,7 +30,7 @@ namespace InsightArchitectures.Utilities.ServiceModel
         /// </summary>
         /// <param name="channelFactory">A channel factory that can create a proxy for <typeparamref name="TContract"/>.</param>
         /// <param name="logger">An instance of <see cref="ILogger" />.</param>
-        public ChannelFactoryProxyWrapper(IChannelFactory<TContract> channelFactory, ILogger<ChannelFactoryProxyWrapper<TContract>> logger)
+        public ChannelFactoryProxyWrapper(ChannelFactory<TContract> channelFactory, ILogger<ChannelFactoryProxyWrapper<TContract>> logger)
             : this(channelFactory, logger as ILogger)
         {
         }

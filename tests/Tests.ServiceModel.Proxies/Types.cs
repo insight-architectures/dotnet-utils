@@ -34,7 +34,7 @@ namespace Tests
 
     public class TestChannelFactoryProxyWrapper : ChannelFactoryProxyWrapper<ITestService>
     {
-        public TestChannelFactoryProxyWrapper(InsightArchitectures.Utilities.ServiceModel.IChannelFactory<ITestService> channelFactory, ILogger<TestChannelFactoryProxyWrapper> logger) : base(channelFactory, logger)
+        public TestChannelFactoryProxyWrapper(ChannelFactory<ITestService> channelFactory, ILogger<TestChannelFactoryProxyWrapper> logger) : base(channelFactory, logger)
         {
         }
     }
