@@ -16,22 +16,15 @@ namespace ChannelFactorySampleFx
 
             services.AddLogging(l => l.AddConsole().SetMinimumLevel(LogLevel.Debug));
 
-            services.AddSingleton(sp =>
-            {
-                var binding = new BasicHttpBinding();
-
-                var endpointAddress = new EndpointAddress("http://localhost:8080/basic");
-
-                return ActivatorUtilities.CreateInstance<ChannelFactory<ITestService>>(sp, binding, endpointAddress);
-            });
-
-            services.AddTransient<TestEchoProxyWrapper>();
+            services.AddServiceModelProxy<ITestService>()
+                    .SetBinding(new BasicHttpBinding())
+                    .SetEndpointAddress(new Uri("http://localhost:8080/basic"));
 
             await using var serviceProvider = services.BuildServiceProvider();
 
             var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            using var client = serviceProvider.GetRequiredService<TestEchoProxyWrapper>();
+            using var client = serviceProvider.GetRequiredService<IProxyWrapper<ITestService>>();
 
             try
             {
@@ -47,10 +40,5 @@ namespace ChannelFactorySampleFx
                 logger.LogError(ex, "An error occurred while performing a remote call");
             }
         }
-    }
-
-    public class TestEchoProxyWrapper : ChannelFactoryProxyWrapper<ITestService>
-    {
-        public TestEchoProxyWrapper(ChannelFactory<ITestService> channelFactory, ILogger<TestEchoProxyWrapper> logger) : base(channelFactory, logger) { }
     }
 }

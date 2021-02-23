@@ -17,22 +17,15 @@ namespace ClientBaseSample
 
             services.AddLogging(l => l.AddConsole().SetMinimumLevel(LogLevel.Debug));
 
-            services.AddTransient(sp =>
-            {
-                var binding = new BasicHttpBinding();
-
-                var endpointAddress = new EndpointAddress("http://localhost:8080/basic");
-
-                return ActivatorUtilities.CreateInstance<TestClient>(sp, binding, endpointAddress);
-            });
-
-            services.AddTransient<TestEchoProxyWrapper>();
+            services.AddServiceModelProxy<ITestService, TestClient>()
+                    .SetBinding(new BasicHttpBinding())
+                    .SetEndpointAddress(new Uri("http://localhost:8080/basic"));
 
             await using var serviceProvider = services.BuildServiceProvider();
 
             var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            var client = serviceProvider.GetRequiredService<TestEchoProxyWrapper>();
+            var client = serviceProvider.GetRequiredService<IProxyWrapper<ITestService>>();
 
             try
             {
@@ -59,10 +52,5 @@ namespace ClientBaseSample
         public string SuccessOperation(string message) => Channel.SuccessOperation(message);
 
         public string FaultyOperation(string message) => Channel.FaultyOperation(message);
-    }
-
-    public class TestEchoProxyWrapper : ClientBaseProxyWrapper<ITestService, TestClient>
-    {
-        public TestEchoProxyWrapper(TestClient client, ILogger<TestEchoProxyWrapper> logger) : base(client, logger) {}
     }
 }
