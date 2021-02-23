@@ -19,6 +19,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             _ = name ?? throw new ArgumentNullException(nameof(name));
 
+            services.AddOptions();
+
+            services.AddLogging();
+
             var builder = new DefaultServiceModelProxyBuilder(name, services);
 
             builder.Services.AddTransient<IProxyWrapper<TContract>>(sp =>
@@ -57,6 +61,10 @@ namespace Microsoft.Extensions.DependencyInjection
             _ = services ?? throw new ArgumentNullException(nameof(services));
 
             _ = name ?? throw new ArgumentNullException(nameof(name));
+
+            services.AddOptions();
+
+            services.AddLogging();
 
             var builder = new DefaultServiceModelProxyBuilder(name, services);
 
