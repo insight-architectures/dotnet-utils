@@ -8,15 +8,16 @@ using Microsoft.Extensions.Logging;
 
 namespace ChannelFactorySampleFx
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var services = new ServiceCollection();
 
             services.AddLogging(l => l.AddConsole().SetMinimumLevel(LogLevel.Debug));
 
             services.AddServiceModelProxy<ITestService>()
+                    .AddTypedWrapper<ITestClient, ITestService, TestProxyWrapper>()
                     .SetBinding(new BasicHttpBinding())
                     .SetEndpointAddress(new Uri("http://localhost:8080/basic"));
 
@@ -24,11 +25,11 @@ namespace ChannelFactorySampleFx
 
             var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            using var client = serviceProvider.GetRequiredService<IProxyWrapper<ITestService>>();
+            using var client = serviceProvider.GetRequiredService<ITestClient>();
 
             try
             {
-                for (var i = 0; i < 10_000; i++)
+                for (var i = 0; i < 1_000; i++)
                 {
                     var result = client.Proxy.SuccessOperation($"Hello world {i}");
 
@@ -40,5 +41,12 @@ namespace ChannelFactorySampleFx
                 logger.LogError(ex, "An error occurred while performing a remote call");
             }
         }
+    }
+
+    public interface ITestClient : IProxyWrapper<ITestService> { }
+
+    public class TestProxyWrapper : ChannelFactoryProxyWrapper<ITestService>, ITestClient
+    {
+        public TestProxyWrapper(ChannelFactory<ITestService> client, ILogger<TestProxyWrapper> logger) : base(client, logger) { }
     }
 }

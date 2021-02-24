@@ -9,9 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace NetTestServer
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var host = CreateWebHostBuilder(args).Build();
             host.Run();

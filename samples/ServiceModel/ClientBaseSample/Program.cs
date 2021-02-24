@@ -9,9 +9,9 @@ using Contracts;
 
 namespace ClientBaseSample
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var services = new ServiceCollection();
 
@@ -29,7 +29,7 @@ namespace ClientBaseSample
 
             try
             {
-                for (var i = 0; i < 10_000; i++)
+                for (var i = 0; i < 1_000; i++)
                 {
                     var result = client.Proxy.SuccessOperation($"Hello world {i}");
 
