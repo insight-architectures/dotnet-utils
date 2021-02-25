@@ -18,6 +18,23 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceModelProxyBuilderExtensions
     {
         /// <summary>
+        /// Configures the <see cref="IServiceModelProxyBuilder" /> by customizing the <see cref="ServiceModelProxyOptions"/> used when creating the proxy.
+        /// </summary>
+        /// <param name="builder">The <see cref="IServiceModelProxyBuilder"/>.</param>
+        /// <param name="configuration">A delegate to be used to configure the <see cref="ServiceModelProxyOptions"/>.</param>
+        /// <returns>An instance of <see cref="IServiceModelProxyBuilder"/>.</returns>
+        public static IServiceModelProxyBuilder Configure(this IServiceModelProxyBuilder builder, Action<ServiceModelProxyOptions> configuration)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+
+            _ = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+            builder.Services.Configure(builder.Name, configuration);
+
+            return builder;
+        }
+
+        /// <summary>
         /// Configures the <see cref="IServiceModelProxyBuilder" /> to customize the <see cref="ServiceEndpoint" /> when creating the proxy.
         /// </summary>
         /// <param name="builder">The <see cref="IServiceModelProxyBuilder"/>.</param>
@@ -29,9 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             _ = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
-            builder.Services.Configure<ServiceModelProxyOptions>(builder.Name, options => options.EndpointConfigurations.Add(configuration));
-
-            return builder;
+            return Configure(builder, options => options.EndpointConfigurations.Add(configuration));
         }
 
         /// <summary>
@@ -46,9 +61,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             _ = binding ?? throw new ArgumentNullException(nameof(binding));
 
-            builder.Services.Configure<ServiceModelProxyOptions>(builder.Name, options => options.BindingFactory = _ => binding);
-
-            return builder;
+            return Configure(builder, options => options.BindingFactory = _ => binding);
         }
 
         /// <summary>
@@ -63,9 +76,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             _ = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
 
-            builder.Services.Configure<ServiceModelProxyOptions>(builder.Name, options => options.EndpointAddressFactory = _ => new EndpointAddress(endpoint.ToString()));
-
-            return builder;
+            return Configure(builder, options => options.EndpointAddressFactory = _ => new EndpointAddress(endpoint.ToString()));
         }
 
         /// <summary>
