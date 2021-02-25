@@ -9,6 +9,7 @@ using InsightArchitectures.Utilities.DependencyInjection;
 using InsightArchitectures.Utilities.ServiceModel.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Moq;
 using NUnit.Framework;
 
 namespace Tests.DependencyInjection
@@ -110,6 +111,21 @@ namespace Tests.DependencyInjection
             var options = sp.GetRequiredService<IOptionsMonitor<ServiceModelProxyOptions>>().Get(builder.Name);
 
             Assert.That(options.EndpointConfigurations, Contains.Item(configuration));
+        }
+
+        [Test, CustomAutoData]
+        public void Configure_is_guarded_against_nulls(GuardClauseAssertion assertion) => assertion.Verify(typeof (ServiceModelProxyBuilderExtensions).GetMethod(nameof(ServiceModelProxyBuilderExtensions.Configure)));
+
+        [Test, CustomAutoData]
+        public void Configure_registers_configuration(IServiceModelProxyBuilder builder, Action<ServiceModelProxyOptions> configuration)
+        {
+            builder.Configure(configuration);
+
+            var sp = builder.Services.BuildServiceProvider();
+
+            var options = sp.GetRequiredService<IOptionsMonitor<ServiceModelProxyOptions>>().Get(builder.Name);
+
+            Mock.Get(configuration).Verify(p => p(options));
         }
 
         [Test]
