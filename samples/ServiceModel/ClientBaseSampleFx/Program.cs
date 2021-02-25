@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using Contracts;
 using InsightArchitectures.Utilities.ServiceModel;
@@ -8,34 +9,28 @@ using Microsoft.Extensions.Logging;
 
 namespace ClientBaseSampleFx
 {
-    class Program
+    public class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var services = new ServiceCollection();
 
             services.AddLogging(l => l.AddConsole().SetMinimumLevel(LogLevel.Debug));
 
-            services.AddSingleton(sp =>
-            {
-                var binding = new BasicHttpBinding();
-
-                var endpointAddress = new EndpointAddress("http://localhost:8080/basic");
-
-                return ActivatorUtilities.CreateInstance<ChannelFactory<ITestService>>(sp, binding, endpointAddress);
-            });
-
-            services.AddTransient<TestEchoProxyWrapper>();
+            services.AddServiceModelProxy<ITestService, TestClient>()
+                    .AddTypedWrapper<ITestClient, ITestService, TestClient, TestProxyWrapper>()
+                    .SetBinding(new BasicHttpBinding())
+                    .SetEndpointAddress(new Uri("http://localhost:8080/basic"));
 
             await using var serviceProvider = services.BuildServiceProvider();
 
             var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-            using var client = serviceProvider.GetRequiredService<TestEchoProxyWrapper>();
+            var client = serviceProvider.GetRequiredService<ITestClient>();
 
             try
             {
-                for (var i = 0; i < 10_000; i++)
+                for (var i = 0; i < 1_000; i++)
                 {
                     var result = client.Proxy.SuccessOperation($"Hello world {i}");
 
@@ -49,8 +44,21 @@ namespace ClientBaseSampleFx
         }
     }
 
-    public class TestEchoProxyWrapper : ChannelFactoryProxyWrapper<ITestService>
+    public class TestClient : ClientBase<ITestService>, ITestService
     {
-        public TestEchoProxyWrapper(ChannelFactory<ITestService> channelFactory, ILogger<TestEchoProxyWrapper> logger) : base(channelFactory, logger) { }
+        public TestClient(Binding binding, EndpointAddress address) : base(binding, address)
+        {
+        }
+
+        public string SuccessOperation(string message) => Channel.SuccessOperation(message);
+
+        public string FaultyOperation(string message) => Channel.FaultyOperation(message);
+    }
+
+    public interface ITestClient : IProxyWrapper<ITestService> { }
+
+    public class TestProxyWrapper : ClientBaseProxyWrapper<ITestService, TestClient>, ITestClient
+    {
+        public TestProxyWrapper(TestClient client, ILogger<TestProxyWrapper> logger) : base(client, logger) {}
     }
 }
