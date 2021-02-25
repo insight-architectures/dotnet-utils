@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var builder = new ChannelFactoryServiceModelProxyBuilder<TContract>(name, services);
 
-            builder.Services.AddTransient<ChannelFactory<TContract>>(sp =>
+            builder.Services.AddSingleton<ChannelFactory<TContract>>(sp =>
             {
                 var optionMonitor = sp.GetRequiredService<IOptionsMonitor<ServiceModelProxyOptions>>();
 

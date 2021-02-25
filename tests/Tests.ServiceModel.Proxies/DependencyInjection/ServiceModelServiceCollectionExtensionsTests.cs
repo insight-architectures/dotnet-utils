@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
 using AutoFixture.Idioms;
+using InsightArchitectures.Utilities.ServiceModel;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
@@ -25,6 +28,126 @@ namespace Tests.DependencyInjection
                              .MakeGenericMethod(genericParameterArgumentTypes);
 
             assertion.Verify(method);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_registers_ChannelFactory(ServiceCollection services, Binding binding, Uri endpoint)
+        {
+            services.AddServiceModelProxy<ITestService>()
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            using var channelFactory = serviceProvider.GetService<ChannelFactory<ITestService>>();
+
+            Assert.That(channelFactory, Is.Not.Null);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_registers_ChannelFactory(ServiceCollection services, string name, Binding binding, Uri endpoint)
+        {
+            services.AddServiceModelProxy<ITestService>(name)
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            using var channelFactory = serviceProvider.GetService<ChannelFactory<ITestService>>();
+
+            Assert.That(channelFactory, Is.Not.Null);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_registers_IProxyWrapper(ServiceCollection services, Binding binding, Uri endpoint)
+        {
+            services.AddServiceModelProxy<ITestService>()
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var proxy = serviceProvider.GetService<IProxyWrapper<ITestService>>();
+
+            Assert.That(proxy, Is.Not.Null);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_registers_IProxyWrapper(ServiceCollection services, string name, Binding binding, Uri endpoint)
+        {
+            services.AddServiceModelProxy<ITestService>(name)
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var proxy = serviceProvider.GetService<IProxyWrapper<ITestService>>();
+
+            Assert.That(proxy, Is.Not.Null);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_with_proxy_registers_Proxy_client(ServiceCollection services, Binding binding, Uri endpoint, Func<string, string> executor)
+        {
+            services.AddSingleton(executor);
+
+            services.AddServiceModelProxy<ITestService, TestClient>()
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var client = serviceProvider.GetService<TestClient>();
+
+            Assert.That(client, Is.Not.Null);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_with_proxy_registers_Proxy_client(ServiceCollection services, string name, Binding binding, Uri endpoint, Func<string, string> executor)
+        {
+            services.AddSingleton(executor);
+
+            services.AddServiceModelProxy<ITestService, TestClient>(name)
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var client = serviceProvider.GetService<TestClient>();
+
+            Assert.That(client, Is.Not.Null);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_with_proxy_registers_IProxyWrapper(ServiceCollection services, Binding binding, Uri endpoint, Func<string, string> executor)
+        {
+            services.AddSingleton(executor);
+
+            services.AddServiceModelProxy<ITestService, TestClient>()
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var proxy = serviceProvider.GetService<IProxyWrapper<ITestService>>();
+
+            Assert.That(proxy, Is.Not.Null);
+        }
+
+        [Test, CustomAutoData]
+        public void AddServiceModelProxy_with_proxy_registers_IProxyWrapper(ServiceCollection services, string name, Binding binding, Uri endpoint, Func<string, string> executor)
+        {
+            services.AddSingleton(executor);
+
+            services.AddServiceModelProxy<ITestService, TestClient>(name)
+                    .SetBinding(binding)
+                    .SetEndpointAddress(endpoint);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var proxy = serviceProvider.GetService<IProxyWrapper<ITestService>>();
+
+            Assert.That(proxy, Is.Not.Null);
         }
     }
 }
