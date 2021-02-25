@@ -3,6 +3,7 @@
 using System;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using InsightArchitectures.Utilities.DependencyInjection;
 using InsightArchitectures.Utilities.ServiceModel;
@@ -16,6 +17,23 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceModelProxyBuilderExtensions
     {
+        /// <summary>
+        /// Configures the <see cref="IServiceModelProxyBuilder" /> to customize the <see cref="ServiceEndpoint" /> when creating the proxy.
+        /// </summary>
+        /// <param name="builder">The <see cref="IServiceModelProxyBuilder"/>.</param>
+        /// <param name="configuration">A delegate to be used to configure the <see cref="ServiceEndpoint"/>.</param>
+        /// <returns>An instance of <see cref="IServiceModelProxyBuilder"/>.</returns>
+        public static IServiceModelProxyBuilder ConfigureServiceEndpoint(this IServiceModelProxyBuilder builder, Action<IServiceProvider, ServiceEndpoint> configuration)
+        {
+            _ = builder ?? throw new ArgumentNullException(nameof(builder));
+
+            _ = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+            builder.Services.Configure<ServiceModelProxyOptions>(builder.Name, options => options.EndpointConfigurations.Add(configuration));
+
+            return builder;
+        }
+
         /// <summary>
         /// Configures the <see cref="IServiceModelProxyBuilder"/> to use the given <see cref="Binding"/> when creating the proxy.
         /// </summary>
@@ -63,13 +81,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.Services.AddSingleton<IClientMessageInspector, TInspector>();
 
-            builder.Services.Configure<ServiceModelProxyOptions>(builder.Name, options =>
-            {
-                options.EndpointConfigurations.Add((services, endpoint) =>
-                {
-                    endpoint.EndpointBehaviors.Add(services.GetRequiredService<ClientMessageInspectorEndpointBehavior>());
-                });
-            });
+            builder.ConfigureServiceEndpoint((services, endpoint) => endpoint.EndpointBehaviors.Add(services.GetRequiredService<ClientMessageInspectorEndpointBehavior>()));
 
             builder.Services.TryAddSingleton<ClientMessageInspectorEndpointBehavior>();
 

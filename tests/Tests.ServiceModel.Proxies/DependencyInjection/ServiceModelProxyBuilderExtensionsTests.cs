@@ -97,6 +97,21 @@ namespace Tests.DependencyInjection
             });
         }
 
+        [Test, CustomAutoData]
+        public void ConfigureServiceEndpoint_is_guarded_against_nulls(GuardClauseAssertion assertion) => assertion.Verify(typeof(ServiceModelProxyBuilderExtensions).GetMethod(nameof(ServiceModelProxyBuilderExtensions.ConfigureServiceEndpoint)));
+
+        [Test, CustomAutoData]
+        public void ConfigureServiceEndpoint_registers_customization(IServiceModelProxyBuilder builder, Action<IServiceProvider, ServiceEndpoint> configuration)
+        {
+            builder.ConfigureServiceEndpoint(configuration);
+
+            var sp = builder.Services.BuildServiceProvider();
+
+            var options = sp.GetRequiredService<IOptionsMonitor<ServiceModelProxyOptions>>().Get(builder.Name);
+
+            Assert.That(options.EndpointConfigurations, Contains.Item(configuration));
+        }
+
         [Test]
         [CustomInlineAutoData(3, new[] { typeof(ITestClient), typeof(ITestService), typeof(TestChannelFactoryProxyWrapper) })]
         [CustomInlineAutoData(4, new[] { typeof(ITestClient), typeof(ITestService), typeof(TestClient), typeof(TestClientBaseProxyWrapper) })]
