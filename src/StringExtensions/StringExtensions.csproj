@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <PackageDescription>A set of extension methods to String.</PackageDescription>
     <PackageTags>dotnet;utilities;string</PackageTags>
   </PropertyGroup>
 
