@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <RootNamespace>InsightArchitectures.Utilities</RootNamespace>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>$(RootNamespace).$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
