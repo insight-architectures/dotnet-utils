@@ -41,7 +41,7 @@ public static class ListExtensions
     public static void AddRange<T>(this IList<T> list, IEnumerable<T> items)
     {
         _ = list ?? throw new ArgumentNullException(nameof(list));
-        
+
         foreach (var item in items.EmptyIfNull())
         {
             list.Add(item);
