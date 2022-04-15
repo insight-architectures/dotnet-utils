@@ -3,6 +3,7 @@ using InsightArchitectures.Utilities;
 // ReSharper disable once CheckNamespace
 namespace System.Collections.Generic;
 
+#pragma warning disable SA1649
 /// <summary>
 /// A set of extension methods on the <see cref="ISet{T}"/> type.
 /// </summary>
@@ -48,3 +49,4 @@ public static class InsightArchitecturesSetExtensions
         }
     }
 }
+#pragma warning restore SA1649
