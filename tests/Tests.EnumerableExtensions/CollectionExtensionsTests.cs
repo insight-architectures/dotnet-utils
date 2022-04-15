@@ -1,16 +1,17 @@
 using System.Collections.Generic;
-using InsightArchitectures.Utilities;
 using NUnit.Framework;
+using CollectionExtensions = System.Collections.Generic.InsightArchitecturesCollectionExtensions;
+
 // ReSharper disable InvokeAsExtensionMethod
 
 namespace Tests;
 
 [TestFixture]
-[TestOf(typeof(ListExtensions))]
-public class ListExtensionsTests
+[TestOf(typeof(CollectionExtensions))]
+public class CollectionExtensionsTests
 {
     [TestFixture]
-    [TestOf(nameof(ListExtensions.Add))]
+    [TestOf(nameof(CollectionExtensions.Add))]
     public class Add
     {
         [Test, CustomAutoData]
@@ -19,7 +20,7 @@ public class ListExtensionsTests
             // ReSharper disable once UseObjectOrCollectionInitializer
             var list = new List<string>();
 
-            ListExtensions.Add(list, new[] { testString });
+            CollectionExtensions.Add(list, new[] { testString });
         
             Assert.That(list, Contains.Item(testString));
         }
@@ -40,17 +41,17 @@ public class ListExtensionsTests
         {
             var list = new List<string>();
 
-            ListExtensions.Add(list, null!);
+            CollectionExtensions.Add(list, null!);
 
             Assert.Pass();
         }
 
         [Test, CustomAutoData]
-        public void Throws_is_list_is_null(string[] testStrings) => Assert.That(() => ListExtensions.Add(null!, testStrings), Throws.ArgumentNullException);
+        public void Throws_is_list_is_null(string[] testStrings) => Assert.That(() => CollectionExtensions.Add(null!, testStrings), Throws.ArgumentNullException);
     }
     
     [TestFixture]
-    [TestOf(nameof(ListExtensions.AddRange))]
+    [TestOf(nameof(CollectionExtensions.AddRange))]
     public class AddRange
     {
         [Test, CustomAutoData]
@@ -59,7 +60,7 @@ public class ListExtensionsTests
             // ReSharper disable once UseObjectOrCollectionInitializer
             var list = new List<string>();
 
-            ListExtensions.AddRange(list, new[] { testString });
+            CollectionExtensions.AddRange(list, new[] { testString });
         
             Assert.That(list, Contains.Item(testString));
         }
@@ -69,12 +70,12 @@ public class ListExtensionsTests
         {
             var list = new List<string>();
 
-            ListExtensions.AddRange(list, null!);
+            CollectionExtensions.AddRange(list, null!);
 
             Assert.Pass();
         }
 
         [Test, CustomAutoData]
-        public void Throws_is_list_is_null(string[] testStrings) => Assert.That(() => ListExtensions.AddRange(null!, testStrings), Throws.ArgumentNullException);
+        public void Throws_is_list_is_null(string[] testStrings) => Assert.That(() => CollectionExtensions.AddRange(null!, testStrings), Throws.ArgumentNullException);
     }
 }
