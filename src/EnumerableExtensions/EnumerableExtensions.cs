@@ -18,7 +18,7 @@ namespace InsightArchitectures.Utilities
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Array.Empty<T>();
 
         /// <summary>
-        /// Returns the items contained in <paramref name="source" /> paginated into chuncks of at most <paramref name="pageSize" />.
+        /// Returns the items contained in <paramref name="source" /> paginated into chunks of at most <paramref name="pageSize" />.
         /// </summary>
         /// <param name="source">The sequence to paginate in chunks.</param>
         /// <param name="pageSize">The amount of items each chunk will consist of.</param>
