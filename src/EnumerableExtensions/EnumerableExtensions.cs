@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using InsightArchitectures.Utilities.Internal;
 
@@ -20,6 +21,9 @@ namespace System.Collections.Generic
         /// <typeparam name="T">The type of items in <paramref name="source"/>.</typeparam>
         /// <param name="source">The sequence to be checked if <see langword="null" />.</param>
         /// <returns>The same <paramref name="source"/> if not <see langword="null" />, otherwise an empty sequence of <typeparamref name="T"/>.</returns>
+#if NET5_0_OR_GREATER
+        [return: NotNull]
+#endif
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Array.Empty<T>();
 
         /// <summary>
@@ -31,11 +35,14 @@ namespace System.Collections.Generic
         /// <returns>A sequence of pages containing the items contained in <paramref name="source" />.</returns>
         public static IEnumerable<IEnumerable<T>> Paginate<T>(this IEnumerable<T> source, int pageSize)
         {
-            if (pageSize <= 0)
+            if (pageSize <= 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} should be greater than 0.");
+                throw new ArgumentOutOfRangeException(nameof(pageSize), $"{nameof(pageSize)} should be greater than 1.");
             }
 
+#if NET6_0_OR_GREATER
+            return source.EmptyIfNull().Chunk(pageSize);
+#else
             if (source is null)
             {
                 yield break;
@@ -54,6 +61,7 @@ namespace System.Collections.Generic
 
                 yield return new ReadOnlyCollection<T>(currentPage);
             }
+#endif
         }
 
         /// <summary>
@@ -68,8 +76,14 @@ namespace System.Collections.Generic
         /// <remarks>
         /// Best used to extract the distinct instances of a reference type using a property as discriminator.
         /// </remarks>
+#if NET5_0_OR_GREATER
+        [return: NotNull]
+#endif
         public static IEnumerable<T> DistinctBy<T, TValue>(this IEnumerable<T>? source, Func<T, TValue> selector, IEqualityComparer<TValue>? equalityComparer = null)
         {
+#if NET6_0_OR_GREATER
+            return Enumerable.DistinctBy(source.EmptyIfNull(), selector, equalityComparer);
+#else
             _ = selector ?? throw new ArgumentNullException(nameof(selector));
 
             if (source is null)
@@ -78,9 +92,10 @@ namespace System.Collections.Generic
             }
 
             return Enumerable.Distinct(source, new SelectorEqualityComparer<T, TValue>(selector, equalityComparer ?? EqualityComparer<TValue>.Default));
+#endif
         }
-    }
 #pragma warning restore SA1649
+    }
 }
 
 #pragma warning disable SA1403
@@ -94,8 +109,15 @@ namespace InsightArchitectures.Utilities
             InsightArchitecturesEnumerableExtensions.EmptyIfNull(source);
 
         /// <inheritdoc cref="InsightArchitecturesEnumerableExtensions.Paginate{T}"/>
+#if NET5_0_OR_GREATER
+        [return: NotNull]
+#endif
         public static IEnumerable<IEnumerable<T>> Paginate<T>(this IEnumerable<T> source, int pageSize) =>
+#if NET6_0_OR_GREATER
+            source.EmptyIfNull().Chunk(pageSize);
+#else
             InsightArchitecturesEnumerableExtensions.Paginate(source, pageSize);
+#endif
     }
 }
 
@@ -107,8 +129,15 @@ namespace InsightArchitectures.Utilities
     public static class DistinctEnumerableExtensions
     {
         /// <inheritdoc cref="InsightArchitecturesEnumerableExtensions.DistinctBy{T,TValue}"/>
+#if NET5_0_OR_GREATER
+        [return: NotNull]
+#endif
         public static IEnumerable<T> DistinctBy<T, TValue>(this IEnumerable<T>? source, Func<T, TValue> selector, IEqualityComparer<TValue>? equalityComparer = null) =>
+#if NET6_0_OR_GREATER
+            Enumerable.DistinctBy(source.EmptyIfNull(), selector, equalityComparer);
+#else
             InsightArchitecturesEnumerableExtensions.DistinctBy(source, selector, equalityComparer);
+#endif
     }
 }
 #pragma warning restore SA1403
