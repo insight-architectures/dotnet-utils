@@ -54,5 +54,136 @@ public static class InsightArchitecturesDictionaryExtensions
             dictionary.Add(item.Key, item.Value);
         }
     }
+
+    /// <summary>
+    /// Tries to fetch the value by <paramref name="key"/> from <paramref name="dictionary"/>. If the key is not present, <paramref name="fallbackValue" /> is returned.
+    /// </summary>
+    /// <param name="dictionary">The dictionary where to get the value.</param>
+    /// <param name="key">The key whose value to fetch.</param>
+    /// <param name="fallbackValue">The fallback value to be returned if the key is not available.</param>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <returns>The value associated with the specified key or the fallback value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="dictionary"/> is null.</exception>
+    public static TValue GetValueOrFallback<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue fallbackValue)
+        where TKey : notnull
+    {
+        _ = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+
+        if (!dictionary.TryGetValue(key, out var value))
+        {
+            return fallbackValue;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Tries to fetch the value by <paramref name="key"/> from <paramref name="dictionary"/>. If the key is not present, <paramref name="fallbackValue" /> is returned.
+    /// </summary>
+    /// <param name="dictionary">The dictionary where to get the value.</param>
+    /// <param name="key">The key whose value to fetch.</param>
+    /// <param name="fallbackValue">The fallback value to be returned if the key is not available.</param>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <returns>The value associated with the specified key or the fallback value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="dictionary"/> is null.</exception>
+    public static TValue GetValueOrFallback<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue fallbackValue)
+    {
+        _ = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+
+        if (!dictionary.TryGetValue(key, out var value))
+        {
+            return fallbackValue;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Tries to fetch the value by <paramref name="key"/> from <paramref name="dictionary"/>. If the key is not present, <paramref name="fallbackValue" /> is returned.
+    /// </summary>
+    /// <param name="dictionary">The dictionary where to get the value.</param>
+    /// <param name="key">The key whose value to fetch.</param>
+    /// <param name="fallbackValue">The fallback value to be returned if the key is not available.</param>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <returns>The value associated with the specified key or the fallback value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="dictionary"/> is null.</exception>
+    public static TValue GetValueOrFallback<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue fallbackValue)
+    {
+        _ = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+
+        if (!dictionary.TryGetValue(key, out var value))
+        {
+            return fallbackValue;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Tries to fetch the value by <paramref name="key"/> from <paramref name="dictionary"/>. If the key is not present, the default value of <typeparamref name="TValue" /> is returned.
+    /// </summary>
+    /// <param name="dictionary">The dictionary where to get the value.</param>
+    /// <param name="key">The key whose value to fetch.</param>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <returns>The value associated with the specified key or the default value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="dictionary"/> is null.</exception>
+    public static TValue? GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
+        where TKey : notnull
+    {
+        _ = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+
+        if (!dictionary.TryGetValue(key, out var value))
+        {
+            return default;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Tries to fetch the value by <paramref name="key"/> from <paramref name="dictionary"/>. If the key is not present, the default value of <typeparamref name="TValue" /> is returned.
+    /// </summary>
+    /// <param name="dictionary">The dictionary where to get the value.</param>
+    /// <param name="key">The key whose value to fetch.</param>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <returns>The value associated with the specified key or the default value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="dictionary"/> is null.</exception>
+    public static TValue? GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+    {
+        _ = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+
+        if (!dictionary.TryGetValue(key, out var value))
+        {
+            return default;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Tries to fetch the value by <paramref name="key"/> from <paramref name="dictionary"/>. If the key is not present, the default value of <typeparamref name="TValue" /> is returned.
+    /// </summary>
+    /// <param name="dictionary">The dictionary where to get the value.</param>
+    /// <param name="key">The key whose value to fetch.</param>
+    /// <typeparam name="TKey">The type of the key.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <returns>The value associated with the specified key or the default value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="dictionary"/> is null.</exception>
+    public static TValue? GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+    {
+        _ = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+
+        if (!dictionary.TryGetValue(key, out var value))
+        {
+            return default;
+        }
+
+        return value;
+    }
 }
 #pragma warning restore SA1649
