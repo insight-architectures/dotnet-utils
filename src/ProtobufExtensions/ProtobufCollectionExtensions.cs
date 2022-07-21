@@ -10,7 +10,7 @@ namespace InsightArchitectures.Utilities
     public static class ProtobufCollectionExtensions
     {
         /// <summary>
-        /// Adds all the items contained in <paramref name="items"/> to the given <see cref="MapField{TKey,TValue}" />.
+        /// Adds all the items contained in <paramref name="items"/> to the given <see cref="AWSConfig" />.
         /// </summary>
         /// <param name="map">The collections items should be added to.</param>
         /// <param name="items">The items to add to the collection.</param>
