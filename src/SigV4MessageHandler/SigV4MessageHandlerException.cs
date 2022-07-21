@@ -3,6 +3,7 @@ namespace InsightArchitectures.Utilities;
 /// <summary>
 /// An exception class for <see cref="SigV4MessageHandler"/>.
 /// </summary>
+[Serializable]
 public class SigV4MessageHandlerException : Exception
 {
     /// <summary>
@@ -29,5 +30,15 @@ public class SigV4MessageHandlerException : Exception
     public SigV4MessageHandlerException(string message, Exception innerException)
         : base(message, innerException)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SigV4MessageHandlerException"/> class.
+    /// </summary>
+    /// <param name="serializationInfo"></param>
+    /// <param name="streamingContext"></param>
+    protected SigV4MessageHandlerException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+    {
+        throw new NotImplementedException();
     }
 }
