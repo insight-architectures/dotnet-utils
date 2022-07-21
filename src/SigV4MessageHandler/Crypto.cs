@@ -5,9 +5,12 @@ namespace InsightArchitectures.Utilities;
 #pragma warning disable SA1600
 internal static class Crypto
 {
-    private static readonly HashAlgorithm _sha256 = SHA256.Create();
+    public static byte[] Hash_SHA256(byte[] data)
+    {
+        using var sha256 = SHA256.Create();
 
-    public static byte[] Hash_SHA256(byte[] data) => _sha256.ComputeHash(data);
+        return sha256.ComputeHash(data);
+    }
 
     public static byte[] SignHMAC_SHA256(byte[] data, byte[] key)
     {
