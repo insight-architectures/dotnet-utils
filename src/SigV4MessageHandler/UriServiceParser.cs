@@ -37,3 +37,5 @@ internal class UriServiceParser
             "Could not automatically determine AWS service based on URL. Please provide the service name you are trying to access through the message handler constructor.");
     }
 }
+#pragma warning restore CA1308
+#pragma warning restore SA1600

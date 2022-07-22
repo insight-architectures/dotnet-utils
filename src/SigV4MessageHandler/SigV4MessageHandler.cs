@@ -240,3 +240,4 @@ public class SigV4MessageHandler : DelegatingHandler
         return headersToSign;
     }
 }
+#pragma warning restore CA1308

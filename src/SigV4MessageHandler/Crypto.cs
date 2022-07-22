@@ -2,6 +2,8 @@ using System.Security.Cryptography;
 
 namespace InsightArchitectures.Utilities;
 
+#pragma warning disable SA1600
+
 internal static class Crypto
 {
     public static byte[] Hash_SHA256(byte[] data)
@@ -29,3 +31,4 @@ internal static class Crypto
         return hmac.ComputeHash(data);
     }
 }
+#pragma warning restore SA1600

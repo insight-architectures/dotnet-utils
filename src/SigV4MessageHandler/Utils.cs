@@ -92,3 +92,4 @@ internal static class Utils
         return string.IsNullOrWhiteSpace(result) ? string.Empty : result.Remove(result.Length - 1);
     }
 }
+#pragma warning restore SA1600
