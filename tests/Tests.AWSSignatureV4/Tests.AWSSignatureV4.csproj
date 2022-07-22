@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\SigV4MessageHandler\SigV4MessageHandler.csproj" />
+      <ProjectReference Include="..\..\src\AWSSignatureV4\AWSSignatureV4.csproj" />
     </ItemGroup>
 
 </Project>

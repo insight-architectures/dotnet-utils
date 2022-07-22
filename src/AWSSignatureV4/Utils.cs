@@ -8,11 +8,12 @@
  *
  * or in the "license" file accompanying this file.
  */
+
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace InsightArchitectures.Utilities;
+namespace InsightArchitectures.Utilities.Http;
 
 #pragma warning disable SA1600
 internal static class Utils

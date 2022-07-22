@@ -51,9 +51,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.ServiceModel.Proxies"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.StringExtensions", "tests\Tests.StringExtensions\Tests.StringExtensions.csproj", "{7077B0D7-3B6D-43C8-BA6D-5C6572232659}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SigV4MessageHandler", "src\SigV4MessageHandler\SigV4MessageHandler.csproj", "{1F3F385F-9E65-40C4-97D3-09765B3B2889}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWSSignatureV4", "src\AWSSignatureV4\AWSSignatureV4.csproj", "{1F3F385F-9E65-40C4-97D3-09765B3B2889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.SigV4MessageHandler", "tests\Tests.SigV4MessageHandler\Tests.SigV4MessageHandler.csproj", "{F3D144CA-C9ED-4574-8E84-831C2A89C201}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.AWSSignatureV4", "tests\Tests.AWSSignatureV4\Tests.AWSSignatureV4.csproj", "{F3D144CA-C9ED-4574-8E84-831C2A89C201}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

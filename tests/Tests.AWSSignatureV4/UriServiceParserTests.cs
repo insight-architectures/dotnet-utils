@@ -1,5 +1,5 @@
 using System;
-using InsightArchitectures.Utilities;
+using InsightArchitectures.Utilities.Http;
 using NUnit.Framework;
 
 namespace Tests;

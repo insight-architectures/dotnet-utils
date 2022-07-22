@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace InsightArchitectures.Utilities;
+namespace InsightArchitectures.Utilities.Http;
 
 #pragma warning disable CA1308
 #pragma warning disable SA1600

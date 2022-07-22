@@ -1,4 +1,4 @@
-namespace InsightArchitectures.Utilities;
+namespace InsightArchitectures.Utilities.Http;
 
 /// <summary>
 /// An exception class for <see cref="SigV4MessageHandler"/>.

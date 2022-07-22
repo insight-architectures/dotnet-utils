@@ -8,6 +8,7 @@
  *
  * or in the "license" file accompanying this file.
  */
+
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text;
@@ -15,7 +16,7 @@ using System.Text.RegularExpressions;
 using Amazon;
 using Amazon.Runtime;
 
-namespace InsightArchitectures.Utilities;
+namespace InsightArchitectures.Utilities.Http;
 
 #pragma warning disable CA1308
 

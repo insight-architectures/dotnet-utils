@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace InsightArchitectures.Utilities;
+namespace InsightArchitectures.Utilities.Http;
 
 #pragma warning disable SA1600
 

@@ -4,6 +4,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>InsightArchitectures.Utilities.Http.AWSSignatureV4</AssemblyName>
+    <RootNamespace>InsightArchitectures.Utilities.Http</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +20,7 @@
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Tests.SigV4MessageHandler</_Parameter1>
+      <_Parameter1>Tests.AWSSignatureV4</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
