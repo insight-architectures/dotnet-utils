@@ -15,7 +15,7 @@
 
   <PropertyGroup>
     <PackageDescription>Contains a message handler for HttpClient, that allows calling IAM secured endpoints using Signature 4 signing.</PackageDescription>
-    <PackageTags>dotnet;utilities;aws;signature;v4;iam;httpclient</PackageTags>
+    <PackageTags>dotnet;utilities;aws;aws-signature-v4;aws-iam;httpclient</PackageTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
