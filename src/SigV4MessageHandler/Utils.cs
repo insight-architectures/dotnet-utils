@@ -1,3 +1,13 @@
+/*
+ * This code is partially based on code of the AWS SDK for .NET, which
+ * is licensed under the Apache License, Version 2.0 (the "License").
+ * You may not use this file except in compliance with the License.
+ * A copy of the License is located at
+ *
+ *  http://aws.amazon.com/apache2.0
+ *
+ * or in the "license" file accompanying this file.
+ */
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;

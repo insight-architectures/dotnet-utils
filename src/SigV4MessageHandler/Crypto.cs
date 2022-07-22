@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 
 namespace InsightArchitectures.Utilities;
 
-#pragma warning disable SA1600
 internal static class Crypto
 {
     public static byte[] Hash_SHA256(byte[] data)
