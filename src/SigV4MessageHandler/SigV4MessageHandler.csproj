@@ -11,6 +11,11 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <PackageDescription>Contains a message handler for HttpClient, that allows calling IAM secured endpoints using Signature 4 signing.</PackageDescription>
+    <PackageTags>dotnet;utilities;aws;signature;v4;iam;httpclient</PackageTags>
+  </PropertyGroup>
+
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Tests.SigV4MessageHandler</_Parameter1>
