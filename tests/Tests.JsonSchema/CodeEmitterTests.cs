@@ -29,9 +29,11 @@ namespace Tests
             var source = CodeEmitter.Emit("My.Namespace", "Person", schema);
 
             Assert.That(source, Does.Contain("namespace My.Namespace"));
-            Assert.That(source, Does.Contain("public record Person("));
-            Assert.That(source, Does.Contain("global::System.Guid Id"));
-            Assert.That(source, Does.Contain("string Name"));
+            Assert.That(source, Does.Contain("public record Person"));
+            Assert.That(source, Does.Contain("global::System.Guid Id { get; init; }"));
+            Assert.That(source, Does.Contain("string Name { get; init; }"));
+            Assert.That(source, Does.Contain("[global::System.Text.Json.Serialization.JsonPropertyName(\"id\")]"));
+            Assert.That(source, Does.Contain("[global::System.Text.Json.Serialization.JsonPropertyName(\"name\")]"));
             Assert.That(source, Does.Contain("#nullable enable"));
         }
 
@@ -45,8 +47,8 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Item", schema);
 
-            Assert.That(source, Does.Contain("string RequiredProp"));
-            Assert.That(source, Does.Contain("int? OptionalProp"));
+            Assert.That(source, Does.Contain("string RequiredProp { get; init; }"));
+            Assert.That(source, Does.Contain("int? OptionalProp { get; init; }"));
         }
 
         [Test]
@@ -61,7 +63,7 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Result", schema);
 
-            Assert.That(source, Does.Contain("double[]? Scores"));
+            Assert.That(source, Does.Contain("double[]? Scores { get; init; }"));
         }
 
         [Test]
@@ -76,7 +78,7 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Doc", schema);
 
-            Assert.That(source, Does.Contain("global::System.Collections.Generic.Dictionary<string, string>? Meta"));
+            Assert.That(source, Does.Contain("global::System.Collections.Generic.Dictionary<string, string>? Meta { get; init; }"));
         }
 
         [Test]
@@ -93,10 +95,10 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Person", schema);
 
-            Assert.That(source, Does.Contain("PersonAddress Address"));
-            Assert.That(source, Does.Contain("public record PersonAddress("));
-            Assert.That(source, Does.Contain("string Street"));
-            Assert.That(source, Does.Contain("string? City"));
+            Assert.That(source, Does.Contain("PersonAddress Address { get; init; }"));
+            Assert.That(source, Does.Contain("public record PersonAddress"));
+            Assert.That(source, Does.Contain("string Street { get; init; }"));
+            Assert.That(source, Does.Contain("string? City { get; init; }"));
         }
 
         [Test]
@@ -122,7 +124,7 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Event", schema);
 
-            Assert.That(source, Does.Contain("global::System.DateTimeOffset CreatedAt"));
+            Assert.That(source, Does.Contain("global::System.DateTimeOffset CreatedAt { get; init; }"));
         }
 
         [Test]
@@ -134,8 +136,8 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Counter", schema);
 
-            Assert.That(source, Does.Contain("int? Count"));
-            Assert.That(source, Does.Contain("long? Big"));
+            Assert.That(source, Does.Contain("int? Count { get; init; }"));
+            Assert.That(source, Does.Contain("long? Big { get; init; }"));
         }
 
         [Test]
@@ -146,7 +148,7 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Entity", schema);
 
-            Assert.That(source, Does.Contain("bool? Active"));
+            Assert.That(source, Does.Contain("bool? Active { get; init; }"));
         }
 
         [Test]
@@ -159,7 +161,7 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Thing", schema);
 
-            Assert.That(source, Does.Contain("string? Name"));
+            Assert.That(source, Does.Contain("string? Name { get; init; }"));
         }
 
         [Test]
@@ -169,7 +171,68 @@ namespace Tests
 
             var source = CodeEmitter.Emit("NS", "Empty", schema);
 
-            Assert.That(source, Does.Contain("public record Empty();"));
+            Assert.That(source, Does.Contain("public record Empty"));
+            Assert.That(source, Does.Contain("{"));
+            Assert.That(source, Does.Contain("}"));
+        }
+
+        [Test]
+        public void Emit_adds_json_property_name_attribute()
+        {
+            var schema = new SchemaNode { Type = "object" };
+            schema.Properties.Add("first_name", new SchemaNode { Type = "string" });
+
+            var source = CodeEmitter.Emit("NS", "User", schema);
+
+            Assert.That(source, Does.Contain("[global::System.Text.Json.Serialization.JsonPropertyName(\"first_name\")]"));
+        }
+
+        [Test]
+        public void Emit_adds_description_attribute_when_present()
+        {
+            var schema = new SchemaNode { Type = "object" };
+            schema.Properties.Add("age", new SchemaNode { Type = "integer", Description = "The user's age in years." });
+
+            var source = CodeEmitter.Emit("NS", "User", schema);
+
+            Assert.That(source, Does.Contain("[global::System.ComponentModel.Description(\"The user's age in years.\")]"));
+        }
+
+        [Test]
+        public void Emit_does_not_add_description_attribute_when_absent()
+        {
+            var schema = new SchemaNode { Type = "object" };
+            schema.Properties.Add("age", new SchemaNode { Type = "integer" });
+
+            var source = CodeEmitter.Emit("NS", "User", schema);
+
+            Assert.That(source, Does.Not.Contain("System.ComponentModel.Description"));
+        }
+
+        [Test]
+        public void Emit_required_reference_type_gets_default_initializer()
+        {
+            var schema = new SchemaNode { Type = "object" };
+            schema.Properties.Add("name", new SchemaNode { Type = "string" });
+            schema.Required.Add("name");
+
+            var source = CodeEmitter.Emit("NS", "Item", schema);
+
+            Assert.That(source, Does.Contain("string Name { get; init; } = default!;"));
+        }
+
+        [Test]
+        public void Emit_required_value_type_does_not_get_default_initializer()
+        {
+            var schema = new SchemaNode { Type = "object" };
+            schema.Properties.Add("count", new SchemaNode { Type = "integer" });
+            schema.Required.Add("count");
+
+            var source = CodeEmitter.Emit("NS", "Item", schema);
+
+            // Value types don't need = default!
+            Assert.That(source, Does.Contain("int Count { get; init; }"));
+            Assert.That(source, Does.Not.Contain("int Count { get; init; } = default!;"));
         }
     }
 }

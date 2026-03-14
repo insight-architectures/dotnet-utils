@@ -113,10 +113,10 @@ namespace Tests
                 rootNamespace: "My.App");
 
             Assert.That(source, Does.Contain("namespace My.App.Models"));
-            Assert.That(source, Does.Contain("public record Person("));
-            Assert.That(source, Does.Contain("global::System.Guid Id"));
-            Assert.That(source, Does.Contain("string Name"));
-            Assert.That(source, Does.Contain("int? Age"));
+            Assert.That(source, Does.Contain("public record Person"));
+            Assert.That(source, Does.Contain("global::System.Guid Id { get; init; }"));
+            Assert.That(source, Does.Contain("string Name { get; init; }"));
+            Assert.That(source, Does.Contain("int? Age { get; init; }"));
         }
 
         [Test]
@@ -143,11 +143,11 @@ namespace Tests
                 projectDir: "/project/",
                 rootNamespace: "Foo");
 
-            Assert.That(source, Does.Contain("public record Order("));
-            Assert.That(source, Does.Contain("OrderAddress Address"));
-            Assert.That(source, Does.Contain("public record OrderAddress("));
-            Assert.That(source, Does.Contain("string Street"));
-            Assert.That(source, Does.Contain("string? City"));
+            Assert.That(source, Does.Contain("public record Order"));
+            Assert.That(source, Does.Contain("OrderAddress Address { get; init; }"));
+            Assert.That(source, Does.Contain("public record OrderAddress"));
+            Assert.That(source, Does.Contain("string Street { get; init; }"));
+            Assert.That(source, Does.Contain("string? City { get; init; }"));
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace Tests
                 projectDir: "/project/",
                 rootNamespace: "NS");
 
-            Assert.That(source, Does.Contain("string[]? Tags"));
+            Assert.That(source, Does.Contain("string[]? Tags { get; init; }"));
         }
 
         [Test]
@@ -188,7 +188,7 @@ namespace Tests
                 projectDir: "/project/",
                 rootNamespace: "NS");
 
-            Assert.That(source, Does.Contain("global::System.Collections.Generic.Dictionary<string, string>? Meta"));
+            Assert.That(source, Does.Contain("global::System.Collections.Generic.Dictionary<string, string>? Meta { get; init; }"));
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace Tests
                 projectDir: "/project/",
                 rootNamespace: "NS");
 
-            Assert.That(source, Does.Contain("string? Name"));
+            Assert.That(source, Does.Contain("string? Name { get; init; }"));
         }
 
         // ── End-to-end via Roslyn driver ─────────────────────────────────
@@ -220,7 +220,8 @@ namespace Tests
                 ("/project/Models/Person.schema.json", SimplePersonSchema));
 
             Assert.That(results, Has.Count.EqualTo(1));
-            Assert.That(results[0], Does.Contain("public record Person("));
+            Assert.That(results[0], Does.Contain("public record Person"));
+            Assert.That(results[0], Does.Contain("{ get; init; }"));
         }
 
         [Test]

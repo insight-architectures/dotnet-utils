@@ -103,9 +103,8 @@ namespace InsightArchitectures.Utilities.JsonSchema.Internal
                 sb.AppendLine($"{ind}/// <summary>{EscapeXml(schema.Description!)}</summary>");
             }
 
-            sb.Append($"{ind}public record {typeName}(");
-
-            var parameters = new List<string>();
+            sb.AppendLine($"{ind}public record {typeName}");
+            sb.AppendLine($"{ind}{{");
 
             foreach (var kvp in schema.Properties)
             {
@@ -115,19 +114,57 @@ namespace InsightArchitectures.Utilities.JsonSchema.Internal
                 var isRequired = schema.Required.Contains(propName) && !propSchema.IsNullableType;
                 var csharpType = ResolveCSharpType(propSchema, typeName, csharpName, isRequired, allTypes);
 
-                parameters.Add($"\n{ind2}{csharpType} {csharpName}");
+                sb.AppendLine($"{ind2}[global::System.Text.Json.Serialization.JsonPropertyName(\"{propName}\")]");
+
+                if (!string.IsNullOrWhiteSpace(propSchema.Description))
+                {
+                    var escapedDesc = propSchema.Description!
+                        .Replace("\\", "\\\\")
+                        .Replace("\"", "\\\"")
+                        .Replace("\r", "\\r")
+                        .Replace("\n", "\\n")
+                        .Replace("\t", "\\t");
+                    sb.AppendLine($"{ind2}[global::System.ComponentModel.Description(\"{escapedDesc}\")]");
+                }
+
+                var initializer = NeedsDefaultInitializer(csharpType) ? " = default!;" : string.Empty;
+                sb.AppendLine($"{ind2}public {csharpType} {csharpName} {{ get; init; }}{initializer}");
+                sb.AppendLine();
             }
 
-            if (parameters.Count > 0)
+            sb.AppendLine($"{ind}}}");
+        }
+
+        /// <summary>
+        /// Returns <see langword="true"/> when the non-nullable <paramref name="csharpType"/> is a reference type
+        /// and therefore requires <c>= default!;</c> to suppress the nullable warning in the emitted record.
+        /// </summary>
+        private static bool NeedsDefaultInitializer(string csharpType)
+        {
+            // Nullable types never need an initializer.
+            if (csharpType.EndsWith("?", System.StringComparison.Ordinal))
             {
-                sb.Append(string.Join(",", parameters));
-                sb.AppendLine();
-                sb.AppendLine($"{ind});");
+                return false;
             }
-            else
+
+            // Primitive value-type keywords.
+            if (csharpType == "int" || csharpType == "long" || csharpType == "double"
+                || csharpType == "float" || csharpType == "bool")
             {
-                sb.AppendLine(");");
+                return false;
             }
+
+            // Well-known BCL struct types emitted with their global alias.
+            if (csharpType == "global::System.Guid"
+                || csharpType == "global::System.DateTimeOffset"
+                || csharpType == "global::System.DateOnly"
+                || csharpType == "global::System.TimeOnly")
+            {
+                return false;
+            }
+
+            // Everything else (string, object, arrays, records, Uri, Dictionary …) is a reference type.
+            return true;
         }
 
         private static string ResolveCSharpType(
